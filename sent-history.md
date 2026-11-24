@@ -12,3 +12,9 @@
 - code-reviewer | VoltAgent/awesome-claude-code-subagents | https://github.com/VoltAgent/awesome-claude-code-subagents/blob/main/categories/04-quality-security/code-reviewer.md
 - /fast | EL4CTEO/fast-anything | https://github.com/EL4CTEO/fast-anything/blob/main/commands/fast.md
 
+## 2026-11-24
+- rea-changelog-update | morluto/rea | https://github.com/morluto/rea/blob/main/.agents/skills/rea-changelog-update/SKILL.md
+- /save-session | affaan-m/ECC | https://github.com/affaan-m/ECC/blob/main/commands/save-session.md
+- docker-management | NousResearch/hermes-agent | https://github.com/NousResearch/hermes-agent/blob/main/optional-skills/devops/docker-management/SKILL.md
+- claude-api | anthropics/skills | https://github.com/anthropics/skills/blob/main/skills/claude-api/SKILL.md
+- design-review | nextlevelbuilder/ui-ux-pro-max-skill | https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/main/stack/.claude/agents/design-review.md
