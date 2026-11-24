@@ -1,0 +1,21 @@
+{
+ "last_sent": {
+  "marketing-14": "2026-11-24",
+  "career-04": "2026-11-24",
+  "planning-03": "2026-11-24",
+  "excel-08": "2026-11-24",
+  "meeting-02": "2026-11-24"
+ },
+ "days": [
+  {
+   "date": "2026-11-24",
+   "ids": [
+    "marketing-14",
+    "career-04",
+    "planning-03",
+    "excel-08",
+    "meeting-02"
+   ]
+  }
+ ]
+}
