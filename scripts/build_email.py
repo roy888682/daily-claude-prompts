@@ -214,7 +214,7 @@ def render_html(today: str, picks: list[dict], categories: dict, base: str) -> s
   <tr><td style="padding:6px 4px 0;font-family:{FONT};font-size:12px;line-height:1.7;color:#6e7781;">
     복사 버튼을 누르면 복사 페이지가 열리고, 거기서 <b>복사하기</b>를 한 번 누르면 복사돼요.
     (메일 앱은 보안상 메일 안에서 바로 복사하는 기능을 막아 두었어요.)<br>
-    이 메일은 GitHub Actions가 매일 03:00(한국 시간)에 자동으로 보냅니다.
+    이 메일은 GitHub Actions가 평일(월~금) 03:00(한국 시간)에 자동으로 보냅니다.
   </td></tr>
 </table>
 </td></tr></table>
@@ -243,7 +243,7 @@ def render_text(today: str, picks: list[dict], categories: dict, base: str) -> s
             f"출처: {p['source_name']} {p['source_url']}",
             "",
         ]
-    lines.append("이 메일은 GitHub Actions가 매일 03:00(한국 시간)에 자동으로 보냅니다.")
+    lines.append("이 메일은 GitHub Actions가 평일(월~금) 03:00(한국 시간)에 자동으로 보냅니다.")
     return "\n".join(lines) + "\n"
 
 
