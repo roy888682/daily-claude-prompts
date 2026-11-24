@@ -2,7 +2,7 @@ name: 매일 Claude Code 인기 프롬프트 메일
 
 on:
   schedule:
-    - cron: "0 18 * * *"   # UTC 18:00 = 한국시간 03:00
+    - cron: "0 18 * * 0-4"   # UTC 일~목 18:00 = 한국시간 월~금 03:00
   workflow_dispatch:        # Actions 탭에서 수동 실행
 
 permissions:
