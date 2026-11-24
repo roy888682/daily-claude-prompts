@@ -28,7 +28,7 @@
 | `ANTHROPIC_API_KEY` | Anthropic API 키 (console.anthropic.com) |
 | `GMAIL_USERNAME` | 보내는 Gmail 주소 |
 | `GMAIL_APP_PASSWORD` | 2)에서 만든 16자리 앱 비밀번호 |
-| `MAIL_TO` | 받는 주소 (예: ykhan@dacpole.com) |
+| `MAIL_TO` | 메일을 받을 주소 |
 
 Google Workspace(회사 도메인) 계정이면 관리자가 SMTP/앱 비밀번호를 막아 두었을 수 있습니다. 그 경우 개인 Gmail 계정을 발신용으로 쓰세요.
 
