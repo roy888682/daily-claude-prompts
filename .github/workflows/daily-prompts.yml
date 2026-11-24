@@ -15,39 +15,18 @@ concurrency:
 jobs:
   send:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-    env:
-      GH_TOKEN: ${{ github.token }}
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
-      - name: 날짜 계산 (KST)
-        id: date
+      - name: 메일 본문 생성 (GitHub API만 사용, AI 토큰 없음)
+        id: build
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
+          python3 scripts/build_email.py
+          echo "subject=$(cat out/subject.txt)" >> "$GITHUB_OUTPUT"
           echo "today=$(TZ=Asia/Seoul date +%F)" >> "$GITHUB_OUTPUT"
-          mkdir -p out
-
-      - name: Claude로 메일 본문 생성
-        uses: anthropics/claude-code-action@v1
-        with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          github_token: ${{ github.token }}
-          prompt: |
-            오늘 날짜(KST)는 ${{ steps.date.outputs.today }} 입니다.
-            저장소의 prompts/daily-email.md 파일을 읽고 그 지시를 끝까지 수행하세요.
-          claude_args: >-
-            --max-turns 80
-            --allowedTools "Read,Write,Edit,Glob,Grep,WebSearch,WebFetch,Bash(gh api:*),Bash(curl:*),Bash(date:*),Bash(ls:*),Bash(cat:*),Bash(jq:*),Bash(mkdir:*)"
-
-      - name: 생성 결과 확인
-        run: |
-          for f in out/email.html out/email.txt; do
-            if [ ! -s "$f" ]; then
-              echo "::error::$f 가 생성되지 않았습니다"
-              cat out/skip-reason.txt 2>/dev/null || true
-              exit 1
-            fi
-          done
 
       - name: Gmail SMTP로 발송
         uses: dawidd6/action-send-mail@v3
@@ -59,7 +38,7 @@ jobs:
           password: ${{ secrets.GMAIL_APP_PASSWORD }}
           from: Claude Code 프롬프트 봇 <${{ secrets.GMAIL_USERNAME }}>
           to: ${{ secrets.MAIL_TO }}
-          subject: "[Claude Code 프롬프트] ${{ steps.date.outputs.today }} 오늘의 인기 프롬프트 5선"
+          subject: ${{ steps.build.outputs.subject }}
           html_body: file://out/email.html
           body: file://out/email.txt
           convert_markdown: false
@@ -69,5 +48,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add sent-history.md
-          git diff --cached --quiet || git commit -m "sent-history: ${{ steps.date.outputs.today }}"
+          git diff --cached --quiet || git commit -m "sent-history: ${{ steps.build.outputs.today }}"
           git push
