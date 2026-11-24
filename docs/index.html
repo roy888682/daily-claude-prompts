@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>오늘의 AI 프롬프트</title>
+<meta name="description" content="인터넷에서 많이 쓰이는 업무용 AI 프롬프트를 한국어로 모아 두고, 버튼 한 번으로 복사합니다.">
+<style>
+  :root {
+    --bg: #f3f4f6; --card: #ffffff; --text: #1f2328; --muted: #57606a; --line: #e3e6ea;
+    --box: #f6f8fa; --box-line: #d0d7de; --accent: #1f6feb; --accent-text: #ffffff;
+    --ok: #2da44e; --badge-bg: #eef2ff; --badge-text: #3730a3; --mark-bg: #fff3bf; --mark-text: #5c4400;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0d1117; --card: #161b22; --text: #e6edf3; --muted: #9da7b3; --line: #30363d;
+      --box: #0d1117; --box-line: #30363d; --accent: #388bfd; --accent-text: #ffffff;
+      --ok: #3fb950; --badge-bg: #1f2a48; --badge-text: #a5b4fc; --mark-bg: #4d3800; --mark-text: #ffe8a3;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0d1117; --card: #161b22; --text: #e6edf3; --muted: #9da7b3; --line: #30363d;
+    --box: #0d1117; --box-line: #30363d; --accent: #388bfd; --accent-text: #ffffff;
+    --ok: #3fb950; --badge-bg: #1f2a48; --badge-text: #a5b4fc; --mark-bg: #4d3800; --mark-text: #ffe8a3;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+    line-height: 1.6;
+  }
+  main { max-width: 720px; margin: 0 auto; padding: 24px 16px 64px; }
+  header h1 { font-size: 24px; margin: 0 0 6px; }
+  header p { margin: 0; color: var(--muted); font-size: 14px; }
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 4px; }
+  .filters button {
+    border: 1px solid var(--line); background: var(--card); color: var(--text);
+    border-radius: 999px; padding: 6px 12px; font-size: 13px; cursor: pointer;
+  }
+  .filters button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 18px 18px 16px; margin: 16px 0;
+  }
+  .badge {
+    display: inline-block; background: var(--badge-bg); color: var(--badge-text);
+    font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 999px;
+  }
+  .card h2 { font-size: 18px; margin: 10px 0 6px; line-height: 1.4; }
+  .meta { font-size: 14px; color: var(--muted); margin: 2px 0; }
+  .prompt {
+    background: var(--box); border: 1px solid var(--box-line); border-radius: 8px;
+    padding: 14px 16px; margin: 12px 0; white-space: pre-wrap; word-break: break-word;
+    font-size: 14px; line-height: 1.7; font-family: inherit;
+  }
+  .prompt mark { background: var(--mark-bg); color: var(--mark-text); border-radius: 3px; padding: 0 2px; }
+  .copy {
+    width: 100%; border: 0; border-radius: 10px; background: var(--accent); color: var(--accent-text);
+    font-size: 16px; font-weight: 700; padding: 13px 16px; cursor: pointer;
+  }
+  .copy.done { background: var(--ok); }
+  .tip { font-size: 13px; color: var(--muted); margin: 10px 0 0; }
+  .src { font-size: 12px; color: var(--muted); margin: 6px 0 0; word-break: break-all; }
+  .src a { color: var(--accent); }
+  .all { margin: 18px 0 0; font-size: 14px; }
+  .all a { color: var(--accent); }
+  .empty { color: var(--muted); padding: 24px 0; }
+  .toast {
+    position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%);
+    background: var(--ok); color: #fff; padding: 10px 18px; border-radius: 999px;
+    font-weight: 700; font-size: 14px; opacity: 0; transition: opacity .2s; pointer-events: none;
+  }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1 id="heading">오늘의 AI 프롬프트</h1>
+    <p id="sub">버튼을 누르면 프롬프트가 복사돼요. ChatGPT·Claude·Gemini에 붙여 넣고 <mark style="background:var(--mark-bg);color:var(--mark-text);border-radius:3px;padding:0 2px;">[노란 칸]</mark>만 바꿔 쓰세요.</p>
+  </header>
+  <nav class="filters" id="filters" hidden></nav>
+  <section id="list"><p class="empty">불러오는 중…</p></section>
+  <p class="all" id="all" hidden><a href="./">전체 프롬프트 모음 보기 →</a></p>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+(function () {
+  var params = new URLSearchParams(location.search);
+  var wanted = (params.get("ids") || params.get("id") || "").split(",").map(function (s) { return s.trim(); }).filter(Boolean);
+  var list = document.getElementById("list");
+  var toast = document.getElementById("toast");
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  function promptNode(text) {
+    var box = el("div", "prompt");
+    var re = /\[([^\[\]\n]{1,40})\]/g, last = 0, m;
+    while ((m = re.exec(text))) {
+      box.appendChild(document.createTextNode(text.slice(last, m.index)));
+      box.appendChild(el("mark", null, m[0]));
+      last = m.index + m[0].length;
+    }
+    box.appendChild(document.createTextNode(text.slice(last)));
+    return box;
+  }
+
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add("show");
+    clearTimeout(showToast.t);
+    showToast.t = setTimeout(function () { toast.classList.remove("show"); }, 1800);
+  }
+
+  function fallbackCopy(text) {
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.top = "-1000px";
+    document.body.appendChild(ta);
+    ta.select();
+    ta.setSelectionRange(0, text.length);
+    var ok = false;
+    try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  function copy(text, btn) {
+    function done(ok) {
+      if (ok) {
+        btn.textContent = "✅ 복사됐어요";
+        btn.classList.add("done");
+        showToast("복사됐어요. 붙여 넣기 하세요");
+        setTimeout(function () { btn.textContent = "📋 복사하기"; btn.classList.remove("done"); }, 2500);
+      } else {
+        showToast("복사가 막혀 있어요. 글을 길게 눌러 직접 복사해 주세요");
+      }
+    }
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(fallbackCopy(text)); });
+    } else {
+      done(fallbackCopy(text));
+    }
+  }
+
+  function card(p, cat) {
+    var c = el("article", "card");
+    c.id = p.id;
+    c.appendChild(el("span", "badge", (cat.emoji ? cat.emoji + " " : "") + cat.name));
+    c.appendChild(el("h2", null, p.title));
+    var w = el("p", "meta"); w.appendChild(el("b", null, "언제 쓰나요? ")); w.appendChild(document.createTextNode(p.when)); c.appendChild(w);
+    var y = el("p", "meta"); y.appendChild(el("b", null, "🔥 인기 이유 ")); y.appendChild(document.createTextNode(p.why)); c.appendChild(y);
+    c.appendChild(promptNode(p.prompt));
+    var b = el("button", "copy", "📋 복사하기");
+    b.type = "button";
+    b.addEventListener("click", function () { copy(p.prompt, b); });
+    c.appendChild(b);
+    c.appendChild(el("p", "tip", "💡 " + p.tip));
+    var s = el("p", "src", "출처: " + p.source_name + " · ");
+    if (/^https:\/\//.test(p.source_url)) {
+      var a = el("a", null, p.source_url);
+      a.href = p.source_url; a.target = "_blank"; a.rel = "noopener noreferrer";
+      s.appendChild(a);
+    }
+    c.appendChild(s);
+    return c;
+  }
+
+  function render(data) {
+    var cats = {};
+    (data.categories || []).forEach(function (c) { cats[c.key] = c; });
+    var prompts = (data.prompts || []).filter(function (p) { return cats[p.category]; });
+    list.textContent = "";
+
+    if (wanted.length) {
+      var byId = {};
+      prompts.forEach(function (p) { byId[p.id] = p; });
+      var found = wanted.map(function (id) { return byId[id]; }).filter(Boolean);
+      document.getElementById("heading").textContent = found.length > 1 ? "오늘의 AI 프롬프트 " + found.length + "선" : "프롬프트 복사";
+      if (!found.length) list.appendChild(el("p", "empty", "프롬프트를 찾지 못했어요."));
+      found.forEach(function (p) { list.appendChild(card(p, cats[p.category])); });
+      document.getElementById("all").hidden = false;
+      return;
+    }
+
+    document.getElementById("heading").textContent = "AI 프롬프트 모음 " + prompts.length + "개";
+    var nav = document.getElementById("filters");
+    nav.hidden = false;
+    var keys = ["all"].concat((data.categories || []).map(function (c) { return c.key; }));
+    function show(key) {
+      list.textContent = "";
+      prompts.filter(function (p) { return key === "all" || p.category === key; })
+             .forEach(function (p) { list.appendChild(card(p, cats[p.category])); });
+      Array.prototype.forEach.call(nav.children, function (btn) {
+        btn.setAttribute("aria-pressed", String(btn.dataset.key === key));
+      });
+    }
+    keys.forEach(function (k) {
+      var label = k === "all" ? "전체" : (cats[k].emoji ? cats[k].emoji + " " : "") + cats[k].name;
+      var btn = el("button", null, label);
+      btn.type = "button";
+      btn.dataset.key = k;
+      btn.addEventListener("click", function () { show(k); });
+      nav.appendChild(btn);
+    });
+    show("all");
+  }
+
+  fetch("prompts.json", { cache: "no-cache" })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(render)
+    .catch(function () {
+      list.textContent = "";
+      list.appendChild(el("p", "empty", "프롬프트를 불러오지 못했어요. 잠시 후 새로고침해 주세요."));
+    });
+})();
+</script>
+</body>
+</html>
