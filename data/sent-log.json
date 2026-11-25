@@ -4,7 +4,12 @@
   "career-04": "2026-11-24",
   "planning-03": "2026-11-24",
   "excel-08": "2026-11-24",
-  "meeting-02": "2026-11-24"
+  "meeting-02": "2026-11-24",
+  "productivity-09": "2026-11-25",
+  "writing-07": "2026-11-25",
+  "email-08": "2026-11-25",
+  "presentation-07": "2026-11-25",
+  "report-13": "2026-11-25"
  },
  "days": [
   {
@@ -15,6 +20,16 @@
     "planning-03",
     "excel-08",
     "meeting-02"
+   ]
+  },
+  {
+   "date": "2026-11-25",
+   "ids": [
+    "productivity-09",
+    "writing-07",
+    "email-08",
+    "presentation-07",
+    "report-13"
    ]
   }
  ]
