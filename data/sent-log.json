@@ -14,7 +14,12 @@
   "meeting-09": "2026-11-26",
   "planning-07": "2026-11-26",
   "marketing-04": "2026-11-26",
-  "career-09": "2026-11-26"
+  "career-09": "2026-11-26",
+  "presentation-03": "2026-11-27",
+  "writing-09": "2026-11-27",
+  "productivity-14": "2026-11-27",
+  "email-04": "2026-11-27",
+  "report-10": "2026-11-27"
  },
  "days": [
   {
@@ -45,6 +50,16 @@
     "planning-07",
     "marketing-04",
     "career-09"
+   ]
+  },
+  {
+   "date": "2026-11-27",
+   "ids": [
+    "presentation-03",
+    "writing-09",
+    "productivity-14",
+    "email-04",
+    "report-10"
    ]
   }
  ]
